@@ -81,14 +81,14 @@ jobs:
 
       # # AWS ECR
       # https://github.com/aws-actions/amazon-ecr-login
-      # - name: Configure AWS credentials
-      #   if: steps.prerun.outputs.result != 'skip'
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-      #     aws-region:  ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        if: steps.prerun.outputs.result != 'skip'
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region:  ${{ secrets.AWS_REGION }}
 
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v3
@@ -132,35 +132,14 @@ jobs:
           echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
 
-      - name: Test OIDC IAM access
-        run: aws sts get-caller-identity
+      # - name: Test OIDC IAM access
+      #   run: aws sts get-caller-identity
           
-      - name: Configure kubectl for EKS via OIDC
-        run: |
-          aws eks update-kubeconfig \
-            --region us-east-1 \
-            --name prod-cluster 
-  
-      - name: Install yq
-        run: |
-          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-          sudo chmod +x /usr/bin/yq
-
-      - name: Map GitHub Actions IAM Role to aws-auth
-        if: github.ref == 'refs/heads/main'
-        run: |
-          aws eks update-kubeconfig --region us-east-1 --name prod-cluster
-
-          kubectl get configmap/aws-auth -n kube-system -o yaml > aws-auth.yaml
-
-          # Avoid duplicate entry by checking if role exists
-          if ! grep -q "github-actions-role" aws-auth.yaml; then
-            yq eval '.data.mapRoles += "\n  - rolearn: arn:aws:iam::096016580056:role/github-actions-role\n    username: github-actions\n    groups:\n      - system:masters"' -i aws-auth.yaml
-            kubectl apply -f aws-auth.yaml
-          else
-            echo "✅ GitHub Actions role already mapped in aws-auth"
-          fi
-
+      # - name: Configure kubectl for EKS via OIDC
+      #   run: |
+      #     aws eks update-kubeconfig \
+      #       --region us-east-1 \
+      #       --name prod-cluster 
 
 
       - name: Refresh ECR Pull Secret
