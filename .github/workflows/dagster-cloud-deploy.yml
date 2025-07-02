@@ -155,7 +155,7 @@ jobs:
       - name: Set up kubeconfig
         run: |
           mkdir -p $HOME/.kube
-          cp .github/kubeconfig-ci $HOME/.kube/config
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
       
       - name: Verify Kubernetes connection
