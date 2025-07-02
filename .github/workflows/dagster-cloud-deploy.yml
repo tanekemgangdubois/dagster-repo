@@ -154,13 +154,13 @@ jobs:
 
       - name: Refresh ECR Pull Secret in Kubernetes
         run: |
-          aws ecr get-login-password --region us-east-1 | \
           kubectl create secret docker-registry regcred \
             --docker-server=096016580056.dkr.ecr.us-east-1.amazonaws.com \
             --docker-username=AWS \
-            --docker-password-stdin \
+            --docker-password="$(aws ecr get-login-password --region us-east-1)" \
             -n dagster-cloud \
             --dry-run=client -o yaml | kubectl apply -f -
+
       
       - name: Patch Dagster agent service account to use ECR secret
         run: |
