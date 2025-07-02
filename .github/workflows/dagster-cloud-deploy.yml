@@ -139,8 +139,7 @@ jobs:
         run: |
           aws eks update-kubeconfig \
             --region us-east-1 \
-            --name prod-cluster \
-            --role-arn arn:aws:iam::096016580056:role/github-actions-role
+            --name prod-cluster 
 
       - name: Refresh ECR Pull Secret
         run: |
