@@ -6,6 +6,10 @@ on:
       - "master"
   pull_request:  # For branch deployments
      types: [opened, synchronize, reopened, closed]
+  
+permissions:
+  id-token: write
+  contents: read
 
 concurrency:
   # Cancel in-progress deploys to the same branch
