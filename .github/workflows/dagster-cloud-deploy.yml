@@ -159,7 +159,8 @@ jobs:
             --docker-username=AWS \
             --docker-password="$(aws ecr get-login-password --region us-east-1)" \
             -n dagster-cloud \
-            --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl apply --validate=false -f -
+
 
       
       - name: Patch Dagster agent service account to use ECR secret
