@@ -6,10 +6,6 @@ on:
       - "master"
   pull_request:  # For branch deployments
      types: [opened, synchronize, reopened, closed]
-  
-permissions:
-  id-token: write
-  contents: read
 
 concurrency:
   # Cancel in-progress deploys to the same branch
@@ -89,15 +85,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region:  ${{ secrets.AWS_REGION }}
-
-      # - name: Configure AWS credentials via OIDC
-      #   uses: aws-actions/configure-aws-credentials@v3
-      #   with:
-      #     role-to-assume: arn:aws:iam::096016580056:role/github-actions-role
-      #     aws-region: us-east-1
-      #     audience: sts.amazonaws.com
-
-
       - name: Login to ECR
         if: steps.prerun.outputs.result != 'skip'
         uses: aws-actions/amazon-ecr-login@v1
@@ -126,22 +113,12 @@ jobs:
         with:
           command: "ci set-build-output --location-name=quickstart_etl --image-tag=$IMAGE_TAG-quickstart_etl"
 
-      # - name: Set up kubeconfig
-      #   run: |
-      #     mkdir -p $HOME/.kube
-      #     echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
-      #     chmod 600 $HOME/.kube/config
-
-      # - name: Test OIDC IAM access
-      #   run: aws sts get-caller-identity
-          
-      # - name: Configure kubectl for EKS via OIDC
-      #   run: |
-      #     aws eks update-kubeconfig \
-      #       --region us-east-1 \
-      #       --name prod-cluster 
-
-
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+      
       - name: Refresh ECR Pull Secret
         run: |
           kubectl create secret docker-registry regcred \
@@ -156,7 +133,6 @@ jobs:
           kubectl patch serviceaccount agent-dagster-cloud-agent \
             -n dagster-cloud \
             -p '{"imagePullSecrets": [{"name": "regcred"}]}'
-
       # Deploy all code locations in this build session to Dagster Cloud
       - name: Deploy to Dagster Cloud
         id: ci-deploy
