@@ -131,6 +131,9 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+
+      - name: Test OIDC IAM access
+        run: aws sts get-caller-identity
           
       - name: Configure kubectl for EKS via OIDC
         run: |
