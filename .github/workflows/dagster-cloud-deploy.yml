@@ -158,9 +158,6 @@ jobs:
           echo "${{ secrets.KUBECONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
       
-      - name: Verify Kubernetes connection
-        run: |
-          kubectl get nodes
       
       - name: Refresh ECR Pull Secret
         run: |
