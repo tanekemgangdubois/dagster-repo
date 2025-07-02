@@ -90,7 +90,9 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::096016580056:role/github-actions-role
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-1
+          audience: sts.amazonaws.com
+
 
       - name: Login to ECR
         if: steps.prerun.outputs.result != 'skip'
