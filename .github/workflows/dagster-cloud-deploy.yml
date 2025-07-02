@@ -131,7 +131,14 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
-      
+          
+      - name: Configure kubectl for EKS via OIDC
+        run: |
+          aws eks update-kubeconfig \
+            --region us-east-1 \
+            --name your-eks-cluster-name \
+            --role-arn arn:aws:iam::096016580056:role/github-actions-role
+
       - name: Refresh ECR Pull Secret
         run: |
           kubectl create secret docker-registry regcred \
