@@ -152,7 +152,11 @@ jobs:
         with:
           command: "ci set-build-output --location-name=quickstart_etl --image-tag=$IMAGE_TAG-quickstart_etl"
 
-      - name: Refresh ECR Pull Secret in Kubernetes
+      - name: Set up kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
+      
+      - name: Refresh ECR Pull Secret
         run: |
           kubectl create secret docker-registry regcred \
             --docker-server=096016580056.dkr.ecr.us-east-1.amazonaws.com \
@@ -160,14 +164,13 @@ jobs:
             --docker-password="$(aws ecr get-login-password --region us-east-1)" \
             -n dagster-cloud \
             --dry-run=client -o yaml | kubectl apply --validate=false -f -
-
-
       
-      - name: Patch Dagster agent service account to use ECR secret
+      - name: Patch Dagster agent service account
         run: |
           kubectl patch serviceaccount agent-dagster-cloud-agent \
             -n dagster-cloud \
             -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+
 
       # Deploy all code locations in this build session to Dagster Cloud
       - name: Deploy to Dagster Cloud
