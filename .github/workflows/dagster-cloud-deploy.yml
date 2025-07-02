@@ -154,7 +154,9 @@ jobs:
 
       - name: Set up kubeconfig
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
       
       - name: Refresh ECR Pull Secret
         run: |
@@ -164,6 +166,7 @@ jobs:
             --docker-password="$(aws ecr get-login-password --region us-east-1)" \
             -n dagster-cloud \
             --dry-run=client -o yaml | kubectl apply --validate=false -f -
+
       
       - name: Patch Dagster agent service account
         run: |
