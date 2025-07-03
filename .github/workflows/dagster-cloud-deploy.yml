@@ -92,7 +92,7 @@ jobs:
 
 
       - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v3.2.0
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::096016580056:role/github-actions-role
           role-session-name: github-actions
