@@ -1,5 +1,18 @@
 name: Dagster Cloud Hybrid Deployment
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - stage
+          - prod
+
+        
   push: # For full deployments
     branches:
       - "main"
@@ -31,6 +44,22 @@ jobs:
   dagster-cloud-deploy:
     runs-on: ubuntu-22.04
     steps:
+
+      - name: Set Deployment Environment (manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "DEPLOY_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+
+      - name: Set Deployment Environment (branch-based fallback)
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            echo "DEPLOY_ENV=prod" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF##*/}" == "stage" ]]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=dev" >> $GITHUB_ENV
+          fi
+          
       # If this is a closed PR the prerun step closes the branch deployment and returns
       # output.result='skip' which is used to skip other steps in this workflow.
       - name: Pre-run checks
@@ -62,7 +91,7 @@ jobs:
           dagster_cloud_yaml_path: ${{ env.DAGSTER_CLOUD_YAML_PATH }}
           # A full deployment name. If this run is for a pull request, this value will be used as
           # the base deployment for the branch deployment.
-          deployment: 'prod'
+          deployment: '${{ env.DEPLOY_ENV }}'
 
       # Any value can be used as the docker image tag. It is recommended to use a unique value
       # for each build so that multiple builds do not overwrite each other.
