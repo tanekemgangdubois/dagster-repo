@@ -126,10 +126,10 @@ jobs:
         with:
           command: "ci set-build-output --location-name=quickstart_etl --image-tag=$IMAGE_TAG-quickstart_etl"
 
-      - name: Set up kubeconfig
-        run: |
-          aws eks --region us-east-1 update-kubeconfig --name prod-cluster
-          kubectl get ns
+      # - name: Set up kubeconfig
+      #   run: |
+      #     aws eks --region us-east-1 update-kubeconfig --name prod-cluster
+      #     kubectl get ns
       
       - name: Refresh ECR Pull Secret
         run: |
