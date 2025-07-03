@@ -113,11 +113,11 @@ jobs:
         with:
           command: "ci set-build-output --location-name=quickstart_etl --image-tag=$IMAGE_TAG-quickstart_etl"
 
-      - name: Set up kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
+      # - name: Set up kubeconfig
+      #   run: |
+      #     mkdir -p $HOME/.kube
+      #     echo "${{ secrets.KUBECONFIG_B64 }}"  > $HOME/.kube/config
+      #     chmod 600 $HOME/.kube/config
       
       - name: Refresh ECR Pull Secret
         run: |
