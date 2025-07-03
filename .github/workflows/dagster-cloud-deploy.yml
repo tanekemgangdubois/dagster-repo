@@ -131,6 +131,7 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+          kubectl get ns
       
       - name: Refresh ECR Pull Secret
         run: |
