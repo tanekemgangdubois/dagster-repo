@@ -13,12 +13,12 @@ on:
           - prod
 
         
-  push: # For full deployments
-    branches:
-      - "main"
-      - "master"
-  pull_request:  # For branch deployments
-     types: [opened, synchronize, reopened, closed]
+  # push: # For full deployments
+  #   branches:
+  #     - "main"
+  #     - "master"
+  # pull_request:  # For branch deployments
+  #    types: [opened, synchronize, reopened, closed]
      
 permissions:
   id-token: write
