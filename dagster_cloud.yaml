@@ -1,3 +1,26 @@
+# locations:
+#   - location_name: quickstart_etl
+#     code_source:
+#       package_name: quickstart_etl.definitions
+#     build:
+#       directory: ./
+#       registry: 096016580056.dkr.ecr.us-east-1.amazonaws.com/dagster-image
+#       # registry: ghcr.io/<org>/<image-name>
+
+deployments:
+  prod:
+    locations:
+      - location_name: quickstart_etl
+        image: 096016580056.dkr.ecr.us-east-1.amazonaws.com/dagster-image:prod
+  stage:
+    locations:
+      - location_name: quickstart_etl
+        image: 096016580056.dkr.ecr.us-east-1.amazonaws.com/dagster-image:stage
+  dev:
+    locations:
+      - location_name: quickstart_etl
+        image: 096016580056.dkr.ecr.us-east-1.amazonaws.com/dagster-image:dev
+
 locations:
   - location_name: quickstart_etl
     code_source:
@@ -5,4 +28,3 @@ locations:
     build:
       directory: ./
       registry: 096016580056.dkr.ecr.us-east-1.amazonaws.com/dagster-image
-      # registry: ghcr.io/<org>/<image-name>
