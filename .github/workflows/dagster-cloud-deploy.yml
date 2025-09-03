@@ -2,7 +2,7 @@ name: Dagster Cloud Hybrid Deployment
 on:
   push:
     branches:
-      - dev
+      - prod
   workflow_dispatch:
     inputs:
       environment:
