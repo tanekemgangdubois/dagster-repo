@@ -8,10 +8,10 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'dev'
+        default: 'prod'
         type: choice
         options:
-          - dev
+          - prod
           - stage
           - prod
 
@@ -60,7 +60,7 @@ jobs:
           elif [[ "${GITHUB_REF##*/}" == "stage" ]]; then
             echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
           else
-            echo "DEPLOY_ENV=dev" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=prod" >> $GITHUB_ENV
           fi
           
       # If this is a closed PR the prerun step closes the branch deployment and returns
